@@ -199,14 +199,12 @@ void() fx_fogbox_think=
 {
     local entity t;
     local float i,f,c;
+    local float dbg=0;
     local vector vt=find(world,classname,"player").origin;
-    if(TRUE)
-    {
-        dprint("\n");
-        dprint(vtos(vt));
-    }
-
     local vector a,b;
+
+    dprint("\nPlayer position is: ");
+    dprint(vtos(vt));
 
     //reset .count on every cycle
     if(self.chain.cnt!=time)
@@ -234,6 +232,7 @@ void() fx_fogbox_think=
         if(v_in_box(a,self.origin,self.size))
         {
             t.origin=a;
+            dbg=dbg+1;
         }
 
         //next
@@ -242,6 +241,10 @@ void() fx_fogbox_think=
         //get next particle
         t=t.chain;
     }
+    dprint("\n");
+    dprint(self.targetname);
+    dprint(" Used: ");
+    dprint(ftos(dbg));
 
     //scan (don't consider calculation of the position)
     i=fpos(self.count-f);          //number of particles left to calculate
@@ -249,13 +252,8 @@ void() fx_fogbox_think=
     dprint(self.targetname);
     dprint(" calc: ");
     dprint(ftos(i));
-    f=0;
+    dbg=0;
 
-    if(TRUE)
-    {
-        dprint("\n");
-        dprint(vtos(vt));
-    }
     while(i>0)
     {
         //calc position
@@ -276,7 +274,7 @@ void() fx_fogbox_think=
         if(v_in_box(a,self.origin,self.size))
         {
             t.origin=a;
-            f=f+1;
+            dbg=dbg+1;
         }
         else
         {
@@ -293,7 +291,7 @@ void() fx_fogbox_think=
     dprint("\n");
     dprint(self.targetname);
     dprint(" tran: ");
-    dprint(ftos(f));
+    dprint(ftos(dbg));
 
     //try to update number of calculated particles
     if(self.chain.count<self.count)
