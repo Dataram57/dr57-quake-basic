@@ -26,7 +26,7 @@ string(float skin) fx_get_particle_model=
     if(skin==13) return "progs/s_dotsml_red.spr";
     if(skin==14) return "progs/s_dotsml_wht.spr";
     if(skin==15) return "progs/s_dotsml_yell.spr";
-    return "progs/s_bubble_yell.spr";
+    return "progs/s_dotmed_blue.spr";
 }
 
 void() fx_fogbox_precache=
@@ -74,7 +74,6 @@ entity(float skin) fx_spawn_particle =
 void() fx_particle_pool_think=
 {
     //apply model
-    dprintln("Update!!!");
     local entity t,t_first;
     local float i=0;
     t_first=self.chain;
@@ -82,12 +81,10 @@ void() fx_particle_pool_think=
     do
     {
         setmodel(t,fx_get_particle_model(self.skin));
-        dprintln(vtos(t.origin));
         t=t.chain;
         i=i+1;
     }
     while(t!=t_first);
-    dprintln(ftos(i));
     self.think=FALSE;
 }
 
@@ -246,10 +243,8 @@ void() fx_fogbox_think=
     local entity t;
     local float i,f,c;
     local vector vt=find(world,classname,"player").origin;
-
     local vector a,b;
 
-    dprintln(vtos(self.view_ofs));
     //reset .count on every cycle
     if(self.chain.cnt!=time)
     {
