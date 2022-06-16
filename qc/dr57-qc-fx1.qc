@@ -1,44 +1,44 @@
-string FX_PARTICLE_MDL0="progs/s_dotsml_wht.spr";
-string FX_PARTICLE_MDL1="progs/s_dotsml_wht.spr";
-string FX_PARTICLE_MDL2="progs/s_dotsml_red.spr";
-int FX_DEFAULT_COUNT=0;
-
 /*
 -----------------
 |               |
-|     Basic     |
+|  fx_particle  |
 |               |
 -----------------
+-oldorigin          random vector
+-chain              next particle (from the pool)
 */
-
-//precache
-void() fx_precache=
-{
-    precache_model(FX_PARTICLE_MDL1);
-    precache_model(FX_PARTICLE_MDL2);
-}
 
 string(float skin) fx_get_particle_model=
 {
-    skin=skin+1;
-    if(skin==1) return FX_PARTICLE_MDL1;
-    if(skin==2) return FX_PARTICLE_MDL2;
-    return FX_PARTICLE_MDL0;
+    if(skin==0) return "progs/s_dotmed_blue.spr";
+    if(skin==1) return "progs/s_dotmed_dblue.spr";
+    if(skin==2) return "progs/s_dotmed_grey.spr";
+    if(skin==3) return "progs/s_dotmed_grn.spr";
+    if(skin==4) return "progs/s_dotmed_lgrn.spr";
+    if(skin==5) return "progs/s_dotmed_red.spr";
+    if(skin==6) return "progs/s_dotmed_yell.spr";
+    if(skin==7) return "progs/s_dotsml_blue.spr";
+    if(skin==8) return "progs/s_dotsml_dblue.spr";
+    if(skin==9) return "progs/s_dotsml_gold.spr";
+    if(skin==10) return "progs/s_dotsml_grey.spr";
+    if(skin==11) return "progs/s_dotsml_grn.spr";
+    if(skin==12) return "progs/s_dotsml_lgrn.spr";
+    if(skin==13) return "progs/s_dotsml_red.spr";
+    if(skin==14) return "progs/s_dotsml_wht.spr";
+    if(skin==15) return "progs/s_dotsml_yell.spr";
+    return "progs/s_bubble_yell.spr";
 }
 
-void(entity p,float skin) fx_apply_particle_model=
+void() fx_fogbox_precache=
 {
-    setmodel(p,fx_get_particle_model(skin));
+    //depends on what style is going to be used, there may be more than 2 models to be used
+    
+    //standard requirements
+    precache_model(fx_get_particle_model(self.skin));
 }
 
 //particle object
-void() fx_particle =
-{
-    //self.chain    next particle
-    fx_precache();
-	//model is going to be set once on think method of pool
-    //setmodel (self, FX_PARTICLE_MDL);
-}
+void() fx_particle = {}
 
 //returns clean particle object(doesn't belong to any chain)
 entity(float skin) fx_spawn_particle =
@@ -46,16 +46,52 @@ entity(float skin) fx_spawn_particle =
     local entity t;
     t=spawn();
     t.classname="fx_particle";
-    //setmodel (t, FX_PARTICLE_MDL);
-    fx_apply_particle_model(t,skin);
 
     //assign special properties
-    t.size=(0,0,0);
-    t.size.x=random();
-    t.size.y=random();
-    t.size.z=random();
+    t.oldorigin=(0,0,0);
+    t.oldorigin.x=random();
+    t.oldorigin.y=random();
+    t.oldorigin.z=random();
     return t;
 }
+
+
+/*
+-----------------
+|               |
+|    Fx_Pool    |
+|               |
+-----------------
+*style              Algorithm which controls the particles                          (Used for pool grouping)
+*count              Maximum number of particles to be displayed (only at start)     (Used for pool grouping)
+                    Number of already calculated particles      (only at update)
+*skin               Color of the particle                                           (Used for pool grouping)
+*chain              Reference to the particle of the pool(ring)
+*goalentity         Reference to the next pool
+*/
+
+
+void() fx_particle_pool_think=
+{
+    //apply model
+    dprintln("Update!!!");
+    local entity t,t_first;
+    local float i=0;
+    t_first=self.chain;
+    t=t_first;
+    do
+    {
+        setmodel(t,fx_get_particle_model(self.skin));
+        dprintln(vtos(t.origin));
+        t=t.chain;
+        i=i+1;
+    }
+    while(t!=t_first);
+    dprintln(ftos(i));
+    self.think=FALSE;
+}
+
+float FX_POOL_START_TIME=0.01;
 
 //setup ring of particles on a specific object
 void(entity pool) fx_setup_particle_pool =
@@ -78,7 +114,10 @@ void(entity pool) fx_setup_particle_pool =
     }
     t_last.chain=t_first;
     pool.chain=t_first;
-    //dprint(vtos(t_first.size));
+
+    //Model set
+    pool.think=fx_particle_pool_think;
+    pool.nextthink=time+FX_POOL_START_TIME;
 }
 
 //use the ring of particles
@@ -88,22 +127,22 @@ entity(entity pool) fx_get_next_particle_from_pool={
     return pool.chain;
 }/**/
 
-void() fx_particle_pool{
-    //apply model
-    local entity t,t_first;
-    t_first=self.chain;
-    while(t)
-    {
-        fx_apply_particle_model(t,self.skin);
-    }
+/*
+void() fx_particle_pool=
+{
+    //precache model
+    precache_model(fx_get_particle_model(self.skin));
+    
+    self.think=fx_particle_pool_think;
+    self.nextthink=time+1;
 }
-
+*/
 
 //this function/method tells whether to group or not to group the provided fogbox with provided pool
 float(entity fogbox,entity pool) fx_compare_fogbox_pool=
 {
     if(fogbox.style!=pool.style) return FALSE;       //Mathematical position algorithm
-    if(fogbox.skin!=pool.skin) return FALSE;         //Model of the particle or skin
+    if(fogbox.skin!=pool.skin) return FALSE;         //Model of the particle or skin of the model
     if(fogbox.speed!=pool.speed) return FALSE;       //Speed of time(time multiplier)
     return TRUE;
 }
@@ -175,13 +214,12 @@ entity() fx_get_particle_pool=
     p.count=self.count;
     p.style=self.style;
     p.skin=self.skin;
+    
     //skin
     fx_setup_particle_pool(p);
 
     //assign pool to the chain of pools
     if(t) t.goalentity=p;
-
-    
 
     return p;
 }
@@ -192,20 +230,26 @@ entity() fx_get_particle_pool=
 |     FogBox    |
 |               |
 -----------------
+-style              Algorithm which controls the particles
+-count              Maximum number of particles to be displayed/calculated
+-skin               Color of the particle
+-view_ofs           Minimum size of the fogbox
+*origin             center of the box
+*size               size of the box
 */
-vector FX_FOGBOX_SIZE=(256,256,256);
+float FX_FOGBOX_START_TIME=0.01;
+float FX_FOGBOX_UPDATE_TIME=0.01;
+vector FX_FOGBOX_DEFAULT_SIZE='256 256 256';
 
 void() fx_fogbox_think=
 {
     local entity t;
     local float i,f,c;
-    local float dbg=0;
     local vector vt=find(world,classname,"player").origin;
+
     local vector a,b;
 
-    dprint("\nPlayer position is: ");
-    dprint(vtos(vt));
-
+    dprintln(vtos(self.view_ofs));
     //reset .count on every cycle
     if(self.chain.cnt!=time)
     {
@@ -219,10 +263,6 @@ void() fx_fogbox_think=
     //scan already calculated
     i=fmin(self.count,f); //number of particles that are already calculated and will be used
     t=self.chain.chain;         //set t to the first particle of the pool
-    dprint("\n");
-    dprint(self.targetname);
-    dprint(" read: ");
-    dprint(ftos(i));
     while(i>0)
     {
         //get position
@@ -231,8 +271,10 @@ void() fx_fogbox_think=
         //try to set (doesn't matter if it has been already transformed)
         if(v_in_box(a,self.origin,self.size))
         {
-            t.origin=a;
-            dbg=dbg+1;
+            //t.origin=a;
+            setorigin(t,a);
+            //t.absmax=a;
+            //t.absmin=a;
         }
 
         //next
@@ -241,30 +283,21 @@ void() fx_fogbox_think=
         //get next particle
         t=t.chain;
     }
-    dprint("\n");
-    dprint(self.targetname);
-    dprint(" Used: ");
-    dprint(ftos(dbg));
 
     //scan (don't consider calculation of the position)
     i=fpos(self.count-f);          //number of particles left to calculate
-    dprint("\n");
-    dprint(self.targetname);
-    dprint(" calc: ");
-    dprint(ftos(i));
-    dbg=0;
-
     while(i>0)
     {
         //calc position
-        a=vt + FX_FOGBOX_SIZE / 2;
-        b=vmulti(FX_FOGBOX_SIZE , t.size);
+        a=vt + self.view_ofs / 2;
+        b=vmulti(self.view_ofs , t.oldorigin);
+
         //movement
         if(self.style==0)
             b.z=b.z-time*64;
 
         //fit
-        a=vmulti(vfloor(vdiv(a - b , FX_FOGBOX_SIZE)) , FX_FOGBOX_SIZE);
+        a=vmulti(vfloor(vdiv(a - b , self.view_ofs)) , self.view_ofs);
         a=a+b;
 
         //save calculated position
@@ -273,13 +306,16 @@ void() fx_fogbox_think=
         //try to set
         if(v_in_box(a,self.origin,self.size))
         {
-            t.origin=a;
-            dbg=dbg+1;
+            //t.origin=a;
+            setorigin(t,a);
+            //t.absmax=a;
+            //t.absmin=a;
         }
         else
         {
             //make invisible
-            t.origin=(0,0,0);
+            //t.origin=(0,0,0);
+            setorigin(t,(0,0,0));
         }
 
         //next
@@ -288,34 +324,30 @@ void() fx_fogbox_think=
         //get next particle
         t=t.chain;
     }
-    dprint("\n");
-    dprint(self.targetname);
-    dprint(" tran: ");
-    dprint(ftos(dbg));
 
     //try to update number of calculated particles
     if(self.chain.count<self.count)
         self.chain.count=self.count;
     
     //next update
-    self.nextthink=time+0.01;
+    self.nextthink=time+FX_FOGBOX_UPDATE_TIME;
 }
 
 void() fx_fogbox_think_init=
 {
-
     //connect to the ring of particles
     self.chain=fx_get_particle_pool();
 
     //start loop
     self.think=fx_fogbox_think;
-    self.nextthink=time+0.01;
+    self.nextthink=time+FX_FOGBOX_UPDATE_TIME;
 }
 //particle (self.origin, '0 0 0', 75, 255);
 
 void() fx_fogbox=
 {
-    fx_precache();
+    //precache
+    fx_fogbox_precache();
 
     //calculate center and size of the box
     setmodel (self, self.model);	// set size and link into world
@@ -323,10 +355,11 @@ void() fx_fogbox=
 	self.model = "";
     self.origin=(self.absmax+self.absmin)/2;        //center
     self.size=vabs(self.absmax-self.absmin)/2;      //size
+    if(!self.view_ofs) self.view_ofs=FX_FOGBOX_DEFAULT_SIZE;
 
-    if(self.think) return;  //cause all is already set
+    if(self.think) return;  //cause pool is already connected
 
     //setup
     self.think=fx_fogbox_think_init;
-    self.nextthink=time+0.01;
+    self.nextthink=time+FX_FOGBOX_START_TIME;
 }
