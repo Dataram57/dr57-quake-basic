@@ -3,7 +3,7 @@ static vector v_forward2, v_up2, v_right2;
 /*==========
 save_vectors
 ==========*/
-static inline void() save_vectors =
+static void() save_vectors =
 {
     v_forward2 = v_forward;
     v_up2 = v_up;
@@ -13,7 +13,7 @@ static inline void() save_vectors =
 /*==========
 restore_vectors
 ==========*/
-static inline void() restore_vectors = 
+static void() restore_vectors = 
 {
     v_forward = v_forward2;
     v_up = v_up2;

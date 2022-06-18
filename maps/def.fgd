@@ -602,11 +602,17 @@
 
 @SolidClass base(dr57-quale-basic-fx) = fx_fogbox : "Fx: Fogbox"
 [
-    style(integer) : "Style of the particle position assignment"
+    style(choices) : "Style of the particle position assignment" : 0=
+	[
+		0 : "Static"
+		1 : "Move by vector (x,y,z)"
+		2 : "Floating (x,y,speed)"
+		3 : "Noise"
+	]
+	v_angle(string) : "Style parameters"
     count(integer) : "Maximum number of particles to consider or render"
     view_ofs(string) : "Minimum size of the box that follows the player"
-    speed(integer) : "Speed of the particle animation (style). Also known as time multiplier"
-    skin(choices) : "Skin of the particle" : 1 =
+    skin(choices) : "Skin of the particle" : 0 =
 	[
         0 : "blue"
         1 : "dark blue"

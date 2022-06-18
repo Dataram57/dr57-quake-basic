@@ -52,6 +52,7 @@ entity(float skin) fx_spawn_particle =
     t.oldorigin.x=random();
     t.oldorigin.y=random();
     t.oldorigin.z=random();
+    t.oldorigin=t.oldorigin * 2 - (1,1,1);
     return t;
 }
 
@@ -85,7 +86,7 @@ void() fx_particle_pool_think=
         i=i+1;
     }
     while(t!=t_first);
-    self.think=FALSE;
+    self.think=SUB_Null;
 }
 
 float FX_POOL_START_TIME=0.01;
@@ -138,9 +139,10 @@ void() fx_particle_pool=
 //this function/method tells whether to group or not to group the provided fogbox with provided pool
 float(entity fogbox,entity pool) fx_compare_fogbox_pool=
 {
-    if(fogbox.style!=pool.style) return FALSE;       //Mathematical position algorithm
-    if(fogbox.skin!=pool.skin) return FALSE;         //Model of the particle or skin of the model
-    if(fogbox.speed!=pool.speed) return FALSE;       //Speed of time(time multiplier)
+    if(fogbox.style!=pool.style) return FALSE;           //Mathematical position algorithm
+    if(fogbox.v_angle!=pool.v_angle) return FALSE;       //Parameters of this algorithm
+    if(fogbox.skin!=pool.skin) return FALSE;             //Model of the particle or skin of the model
+    if(fogbox.view_ofs!=pool.view_ofs) return FALSE;     //Size of the box surrouding the player
     return TRUE;
 }
 
@@ -208,10 +210,12 @@ entity() fx_get_particle_pool=
     //create new pool
     p=spawn();
     p.classname="fx_particle_pool";
-    p.count=self.count;
     p.style=self.style;
+    p.v_angle=self.v_angle;
+    p.count=self.count;
     p.skin=self.skin;
-    
+    p.view_ofs=self.view_ofs;
+
     //skin
     fx_setup_particle_pool(p);
 
@@ -228,6 +232,7 @@ entity() fx_get_particle_pool=
 |               |
 -----------------
 -style              Algorithm which controls the particles
+-v_angle            Style parameters
 -count              Maximum number of particles to be displayed/calculated
 -skin               Color of the particle
 -view_ofs           Minimum size of the fogbox
@@ -241,10 +246,10 @@ vector FX_FOGBOX_DEFAULT_SIZE='256 256 256';
 void() fx_fogbox_think=
 {
     local entity t;
-    local float i,f,c;
+    local float i,f;
     local vector vt=find(world,classname,"player").origin;
-    local vector a,b;
-
+    local vector a,b,c;
+    
     //reset .count on every cycle
     if(self.chain.cnt!=time)
     {
@@ -285,11 +290,33 @@ void() fx_fogbox_think=
     {
         //calc position
         a=vt + self.view_ofs / 2;
-        b=vmulti(self.view_ofs , t.oldorigin);
+        b=vmulti(self.view_ofs , vabs(t.oldorigin));
 
         //movement
-        if(self.style==0)
-            b.z=b.z-time*64;
+        if(self.style==1)       //Move by vector
+        {
+            b=b + self.v_angle * time;
+            //b=vadd(b,self.angle_v * time * self.speed);
+        }
+        else if(self.style==2)
+        {
+            f=time * self.speed;
+            c=(0,0,0);
+            c.x=farsin(f);
+            c.y=farcos(f);
+            c.z=c.x;
+            c=vmulti(c,vsign(t.oldorigin));
+            b=b + vmulti(self.v_angle,c);
+        }
+        else if(self.style==3)
+        {
+            //update next random pos
+            t.oldorigin.x=random();
+            t.oldorigin.y=random();
+            t.oldorigin.z=random();
+            t.oldorigin=t.oldorigin * 2 - (1,1,1);
+        }
+
 
         //fit
         a=vmulti(vfloor(vdiv(a - b , self.view_ofs)) , self.view_ofs);
@@ -328,10 +355,50 @@ void() fx_fogbox_think=
     self.nextthink=time+FX_FOGBOX_UPDATE_TIME;
 }
 
+void() fx_fogbox_use=
+{
+    //disalbe/enable
+    local float i;
+    local entity t;
+    if(self.spawnflags & 1)
+    {
+        //log
+        dprintln("Enabled FogBox ");
+        dprint(self.targetname);
+        //enable
+        i=-1;
+        self.think=fx_fogbox_think;
+        self.nextthink=time+FX_FOGBOX_UPDATE_TIME;
+    }
+    else 
+    {
+        //log
+        dprintln("Disabled FogBox ");
+        dprint(self.targetname);
+        //particles
+        i=self.count;
+        t=self.chain.chain;
+        dprintln(ftos(i));
+        while(i>0)
+        {
+            setorigin(t,(0,0,0));
+            t=t.chain;
+            i=i-1;
+        }
+        //disable
+        i=1;
+        self.think=SUB_Null;
+    }
+    self.spawnflags=self.spawnflags+i;
+}
+
 void() fx_fogbox_think_init=
 {
     //connect to the ring of particles
     self.chain=fx_get_particle_pool();
+
+    //set use func
+    self.use=fx_fogbox_use;
 
     //start loop
     self.think=fx_fogbox_think;

@@ -7,6 +7,7 @@
 "wad" "/home/kebabmaster/quake/tools/wads/shadow.wad;/home/kebabmaster/quake/tools/wads/speedy_cr8.wad;/home/kebabmaster/quake/tools/wads/common.wad;/home/kebabmaster/quake/tools/wads/liquid.wad"
 "_tb_mod" "dr57-quake-basic"
 "_tb_def" "external:/home/kebabmaster/quake/dr57-quake-basic/maps/def.fgd"
+"_tb_layer_hidden" "1"
 // brush 0
 {
 ( 768 496 0 ) ( 768 497 0 ) ( 768 496 1 ) cr8_brick2trim [ 0 -1 0 0 ] [ 0 0 -1 0 ] 0 1 1
@@ -1943,18 +1944,44 @@
 }
 // entity 36
 {
+"classname" "trap_spikeshooter"
+"origin" "920 888 8"
+}
+// entity 37
+{
+"classname" "light"
+"origin" "968 776 8"
+}
+// entity 38
+{
+"classname" "func_button"
+"target" "snow"
+// brush 0
+{
+( 288 464 -64 ) ( 288 465 -64 ) ( 288 464 -63 ) ground_1 [ 0 -1 0 -16 ] [ 0 0 -1 0 ] 0 1 1
+( 288 464 -64 ) ( 288 464 -63 ) ( 289 464 -64 ) ground_1 [ 1 0 0 -16 ] [ 0 0 -1 0 ] 0 1 1
+( 288 464 -32 ) ( 289 464 -32 ) ( 288 465 -32 ) ground_1 [ -1 0 0 -16 ] [ 0 -1 0 0 ] 0 1 1
+( 384 544 0 ) ( 384 545 0 ) ( 385 544 0 ) ground_1 [ 1 0 0 -16 ] [ 0 -1 0 0 ] 0 1 1
+( 384 496 -48 ) ( 385 496 -48 ) ( 384 496 -47 ) ground_1 [ -1 0 0 -16 ] [ 0 0 -1 0 ] 0 1 1
+( 320 544 -48 ) ( 320 544 -47 ) ( 320 545 -48 ) ground_1 [ 0 1 0 -16 ] [ 0 0 -1 0 ] 0 1 1
+}
+}
+// entity 39
+{
 "classname" "func_group"
 "_tb_type" "_tb_layer"
 "_tb_name" "FX"
 "_tb_id" "3"
 "_tb_layer_sort_index" "0"
 }
-// entity 37
+// entity 40
 {
 "classname" "fx_fogbox"
 "count" "200"
-"style" "0"
-"skin" "13"
+"style" "1"
+"skin" "14"
+"targetname" "snow"
+"v_angle" "0 0 -100"
 "_tb_layer" "3"
 // brush 0
 {
@@ -1966,12 +1993,14 @@
 ( 576 400 80 ) ( 576 400 81 ) ( 576 401 80 ) trigger [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1
 }
 }
-// entity 38
+// entity 41
 {
 "classname" "fx_fogbox"
 "count" "200"
-"style" "0"
-"skin" "13"
+"style" "1"
+"skin" "14"
+"targetname" "snow"
+"v_angle" "0 0 -100"
 "_tb_layer" "3"
 // brush 0
 {
@@ -1983,12 +2012,14 @@
 ( 576 512 256 ) ( 576 256 -64 ) ( 576 256 256 ) trigger [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1
 }
 }
-// entity 39
+// entity 42
 {
 "classname" "fx_fogbox"
 "count" "200"
-"style" "0"
+"style" "2"
 "skin" "13"
+"v_angle" "10 10 10"
+"speed" "80"
 "_tb_layer" "3"
 // brush 0
 {
@@ -2000,7 +2031,7 @@
 ( 384 848 80 ) ( 384 848 81 ) ( 384 849 80 ) trigger [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1
 }
 }
-// entity 40
+// entity 43
 {
 "classname" "fx_fogbox"
 "count" "10"
@@ -2018,7 +2049,7 @@
 ( 832 1264 256 ) ( 832 752 0 ) ( 832 752 256 ) trigger [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1
 }
 }
-// entity 41
+// entity 44
 {
 "classname" "fx_fogbox"
 "count" "10"

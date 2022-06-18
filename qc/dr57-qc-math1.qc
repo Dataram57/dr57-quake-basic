@@ -70,6 +70,14 @@ float(float a) fsign=
     return 0;
 }
 
+vector(vector a) vsign=
+{
+    a.x=fsign(a.x);
+    a.y=fsign(a.y);
+    a.z=fsign(a.z);
+    return a;
+}
+
 float(float a) fpos=
 {
     if(a>0) return a;
@@ -91,4 +99,33 @@ float(vector target, vector center, vector size) v_in_box =
     if(target.x>size.x || target.y>size.y || target.z>size.z)
         return FALSE;
     return TRUE;
+}
+
+
+float(float angle) foptangle=
+{
+    if(angle>0) return angle % 360;
+    return 360 - fabs(angle) % 360;
+}
+
+//const
+float MATH_FARSIN_CONST=1/90/90;
+
+float(float angle) farsin=
+{
+    //correct angle
+    angle=foptangle(angle);
+    //get signum of the part angle is on
+    local float i = floor(angle/180) * 2 - 1;
+    //make angle fit in the equastion
+    angle = angle % 180;
+    //get angle value
+    angle = angle * ( angle  - 180 ) * MATH_FARSIN_CONST;
+    //return angle corrected by the - value
+    return angle * i;
+}
+
+float(float angle) farcos=
+{
+    return farsin(90+angle);
 }
