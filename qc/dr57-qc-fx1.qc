@@ -141,6 +141,7 @@ float(entity fogbox,entity pool) fx_compare_fogbox_pool=
 {
     if(fogbox.style!=pool.style) return FALSE;           //Mathematical position algorithm
     if(fogbox.v_angle!=pool.v_angle) return FALSE;       //Parameters of this algorithm
+    if(fogbox.speed!=pool.speed) return FALSE;       //Speed of the animation
     if(fogbox.skin!=pool.skin) return FALSE;             //Model of the particle or skin of the model
     if(fogbox.view_ofs!=pool.view_ofs) return FALSE;     //Size of the box surrouding the player
     return TRUE;
@@ -212,6 +213,7 @@ entity() fx_get_particle_pool=
     p.classname="fx_particle_pool";
     p.style=self.style;
     p.v_angle=self.v_angle;
+    p.speed=self.speed;
     p.count=self.count;
     p.skin=self.skin;
     p.view_ofs=self.view_ofs;
@@ -284,72 +286,95 @@ void() fx_fogbox_think=
         t=t.chain;
     }
 
-    //scan (don't consider calculation of the position)
-    i=fpos(self.count-f);          //number of particles left to calculate
-    while(i>0)
+    
+    if(self.chain.count<self.count)
     {
-        //calc position
-        a=vt + self.view_ofs / 2;
-        b=vmulti(self.view_ofs , vabs(t.oldorigin));
+        //number of particles left to calculate
+        i=fpos(self.count-f);
 
-        //movement
-        if(self.style==1)       //Move by vector
-        {
-            b=b + self.v_angle * time;
-            //b=vadd(b,self.angle_v * time * self.speed);
-        }
-        else if(self.style==2)
+        //calculate constant
+        if(self.style==3)
         {
             f=time * self.speed;
+            //sphere movement
             c=(0,0,0);
-            c.x=farsin(f);
+            c.z=farsin(f);
+            c.x=farcos(f);
             c.y=farcos(f);
-            c.z=c.x;
-            c=vmulti(c,vsign(t.oldorigin));
-            b=b + vmulti(self.v_angle,c);
         }
-        else if(self.style==3)
+
+        //scan (don't consider calculation of the position)
+        while(i>0)
         {
-            //update next random pos
-            t.oldorigin.x=random();
-            t.oldorigin.y=random();
-            t.oldorigin.z=random();
-            t.oldorigin=t.oldorigin * 2 - (1,1,1);
+            //calc position
+            a=vt + self.view_ofs / 2;
+            b=vmulti(self.view_ofs , vabs(t.oldorigin));
+
+            //movement
+            if(self.style==1)       //Move by vector
+            {
+                b=b + self.v_angle * time;
+                //b=vadd(b,self.angle_v * time * self.speed);
+            }
+            else if(self.style==2)
+            {
+                f=time * self.speed + 360 * t.oldorigin.z;
+                //sphere movement
+                c=(0,0,0);
+
+                //X Z
+                c.z=farsin(f);
+                c.x=farcos(f);
+                c.y=farsin(f + 360 * t.oldorigin.y);
+                //c.y=farcos(f);
+                b=b + vmulti(self.v_angle,vmulti(c,vsign(t.oldorigin)));
+            }
+            else if(self.style==3)
+            {
+                b=b + vmulti(self.v_angle,vmulti(c,vsign(t.oldorigin)));
+            }
+            else if(self.style==4)
+            {
+                //update next random pos
+                t.oldorigin.x=random();
+                t.oldorigin.y=random();
+                t.oldorigin.z=random();
+                t.oldorigin=t.oldorigin * 2 - '1 1 1';
+            }
+
+
+            //fit
+            a=vmulti(vfloor(vdiv(a - b , self.view_ofs)) , self.view_ofs);
+            a=a+b;
+
+            //save calculated position
+            t.v_angle=a;
+
+            //try to set
+            if(v_in_box(a,self.origin,self.size))
+            {
+                //t.origin=a;
+                setorigin(t,a);
+                //t.absmax=a;
+                //t.absmin=a;
+            }
+            else
+            {
+                //make invisible
+                //t.origin=(0,0,0);
+                setorigin(t,(0,0,0));
+            }
+
+            //next
+            i=i-1;
+
+            //get next particle
+            t=t.chain;
         }
 
-
-        //fit
-        a=vmulti(vfloor(vdiv(a - b , self.view_ofs)) , self.view_ofs);
-        a=a+b;
-
-        //save calculated position
-        t.v_angle=a;
-
-        //try to set
-        if(v_in_box(a,self.origin,self.size))
-        {
-            //t.origin=a;
-            setorigin(t,a);
-            //t.absmax=a;
-            //t.absmin=a;
-        }
-        else
-        {
-            //make invisible
-            //t.origin=(0,0,0);
-            setorigin(t,(0,0,0));
-        }
-
-        //next
-        i=i-1;
-
-        //get next particle
-        t=t.chain;
-    }
-
-    //try to update number of calculated particles
-    if(self.chain.count<self.count)
+        //try to update number of calculated particles
         self.chain.count=self.count;
+    }
     
     //next update
     self.nextthink=time+FX_FOGBOX_UPDATE_TIME;
