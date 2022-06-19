@@ -4,9 +4,9 @@
 {
 "mapversion" "220"
 "classname" "worldspawn"
-"wad" "/home/kebabmaster/quake/tools/wads/shadow.wad;/home/kebabmaster/quake/tools/wads/speedy_cr8.wad;/home/kebabmaster/quake/tools/wads/common.wad;/home/kebabmaster/quake/tools/wads/liquid.wad"
+"wad" "C:/quake/tools/wads/shadow.wad;C:/quake/tools/wads/speedy_cr8.wad;C:/quake/tools/wads/common.wad;C:/quake/tools/wads/liquid.wad"
 "_tb_mod" "dr57-quake-basic"
-"_tb_def" "external:/home/kebabmaster/quake/dr57-quake-basic/maps/def.fgd"
+"_tb_def" "external:C:/quake/dr57-quake-basic/maps/def.fgd"
 // brush 0
 {
 ( 768 496 0 ) ( 768 497 0 ) ( 768 496 1 ) cr8_brick2trim [ 0 -1 0 0 ] [ 0 0 -1 0 ] 0 1 1
@@ -1084,6 +1084,15 @@
 ( 128 928 -32 ) ( 129 928 -32 ) ( 128 928 -31 ) cr8_panels11 [ -1 0 0 0 ] [ 0 0 -1 0 ] 0 1 1
 ( 128 928 -32 ) ( 128 928 -31 ) ( 128 929 -32 ) cr8_panels11 [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1
 }
+// brush 119
+{
+( 112 848 -32 ) ( 112 849 -32 ) ( 112 848 -31 ) skip [ 0 -1 0 0 ] [ 0 0 -1 0 ] 0 1 1
+( 112 864 -32 ) ( 112 864 -31 ) ( 113 864 -32 ) skip [ 1 0 0 0 ] [ 0 0 -1 0 ] 0 1 1
+( 112 848 -32 ) ( 113 848 -32 ) ( 112 849 -32 ) skip [ -1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1
+( 128 928 64 ) ( 128 929 64 ) ( 129 928 64 ) skip [ 1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1
+( 128 928 -16 ) ( 129 928 -16 ) ( 128 928 -15 ) skip [ -1 0 0 0 ] [ 0 0 -1 0 ] 0 1 1
+( 128 928 -16 ) ( 128 928 -15 ) ( 128 929 -16 ) skip [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1
+}
 }
 // entity 1
 {
@@ -1979,16 +1988,6 @@
 }
 // entity 36
 {
-"classname" "trap_spikeshooter"
-"origin" "920 888 8"
-}
-// entity 37
-{
-"classname" "light"
-"origin" "968 776 8"
-}
-// entity 38
-{
 "classname" "func_button"
 "target" "snow"
 // brush 0
@@ -2001,16 +2000,15 @@
 ( 320 544 -48 ) ( 320 544 -47 ) ( 320 545 -48 ) ground_1 [ 0 1 0 -16 ] [ 0 0 -1 0 ] 0 1 1
 }
 }
-// entity 39
+// entity 37
 {
 "classname" "func_group"
 "_tb_type" "_tb_layer"
 "_tb_name" "FX"
 "_tb_id" "3"
 "_tb_layer_sort_index" "0"
-"_tb_layer_hidden" "1"
 }
-// entity 40
+// entity 38
 {
 "classname" "fx_fogbox"
 "count" "200"
@@ -2018,6 +2016,7 @@
 "skin" "14"
 "targetname" "snow"
 "v_angle" "0 0 -100"
+"speed" "1"
 "_tb_layer" "3"
 // brush 0
 {
@@ -2029,7 +2028,7 @@
 ( 576 400 80 ) ( 576 400 81 ) ( 576 401 80 ) trigger [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1
 }
 }
-// entity 41
+// entity 39
 {
 "classname" "fx_fogbox"
 "count" "200"
@@ -2037,6 +2036,7 @@
 "skin" "14"
 "targetname" "snow"
 "v_angle" "0 0 -100"
+"speed" "1"
 "_tb_layer" "3"
 // brush 0
 {
@@ -2048,7 +2048,7 @@
 ( 576 512 256 ) ( 576 256 -64 ) ( 576 256 256 ) trigger [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1
 }
 }
-// entity 42
+// entity 40
 {
 "classname" "fx_fogbox"
 "count" "200"
@@ -2056,6 +2056,8 @@
 "skin" "13"
 "v_angle" "10 10 10"
 "speed" "80"
+"spawnflags" "0"
+"view_ofs" "256 256 256"
 "_tb_layer" "3"
 // brush 0
 {
@@ -2067,7 +2069,7 @@
 ( 384 848 80 ) ( 384 848 81 ) ( 384 849 80 ) trigger [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1
 }
 }
-// entity 43
+// entity 41
 {
 "classname" "fx_fogbox"
 "count" "200"
@@ -2075,6 +2077,7 @@
 "skin" "14"
 "v_angle" "0 0 -100"
 "targetname" "snow"
+"speed" "1"
 "_tb_layer" "3"
 // brush 0
 {

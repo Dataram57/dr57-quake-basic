@@ -235,6 +235,7 @@ entity() fx_get_particle_pool=
 -----------------
 -style              Algorithm which controls the particles
 -v_angle            Style parameters
+-spped              Speed of the animation
 -count              Maximum number of particles to be displayed/calculated
 -skin               Color of the particle
 -view_ofs           Minimum size of the fogbox
@@ -243,7 +244,7 @@ entity() fx_get_particle_pool=
 */
 float FX_FOGBOX_START_TIME=0.01;
 float FX_FOGBOX_UPDATE_TIME=0.01;
-vector FX_FOGBOX_DEFAULT_SIZE='256 256 256';
+vector FX_FOGBOX_DEFAULT_SIZE='512 512 512';
 
 void() fx_fogbox_think=
 {
@@ -445,6 +446,13 @@ void() fx_fogbox=
     if(!self.view_ofs) self.view_ofs=FX_FOGBOX_DEFAULT_SIZE;
 
     if(self.think) return;  //cause pool is already connected
+
+    //optimize properties
+    if(self.style==1)       //Move by vector
+    {
+        self.v_angle = self.v_angle * self.speed;
+        //b=vadd(b,self.angle_v * time * self.speed);
+    }
 
     //setup
     self.think=fx_fogbox_think_init;

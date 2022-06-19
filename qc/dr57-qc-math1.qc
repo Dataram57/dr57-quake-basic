@@ -111,6 +111,7 @@ float(float angle) foptangle=
 //const
 float MATH_FARSIN_CONST=1/90/90;
 
+//angle in degrees
 float(float angle) farsin=
 {
     //correct angle

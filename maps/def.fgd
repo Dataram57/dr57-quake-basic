@@ -593,9 +593,8 @@
 //
 
 //
-// triggers
+//FX
 //
-
 
 @baseclass base(Targetname) = dr57-quale-basic-fx
 []
