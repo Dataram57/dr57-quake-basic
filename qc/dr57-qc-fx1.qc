@@ -408,7 +408,7 @@ void() fx_dustbox_use=
         dprintln(ftos(i));
         while(i>0)
         {
-            setorigin(t,(0,0,0));
+            setorigin(t,FX_PARTICLE_DUMP_POSITION);
             t=t.chain;
             i=i-1;
         }
@@ -426,6 +426,27 @@ void() fx_dustbox_think_init=
 
     //set use func
     self.use=fx_dustbox_use;
+
+    //disable
+    if(self.spawnflags & 1)
+    {
+        //log
+        dprintln("Disabled dustbox ");
+        dprint(self.targetname);
+        //particles
+        local float i=self.count;
+        local entity t=self.chain.chain;
+        dprintln(ftos(i));
+        while(i>0)
+        {
+            setorigin(t,FX_PARTICLE_DUMP_POSITION);
+            t=t.chain;
+            i=i-1;
+        }
+        //disable
+        self.think=SUB_Null;
+        return;
+    }
 
     //start loop
     self.think=fx_dustbox_think;
