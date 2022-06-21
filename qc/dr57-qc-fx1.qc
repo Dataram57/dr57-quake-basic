@@ -29,7 +29,7 @@ string(float skin) fx_get_particle_model=
     return "progs/s_dotmed_blue.spr";
 }
 
-void() fx_fogbox_precache=
+void() fx_dustbox_precache=
 {
     //depends on what style is going to be used, there may be more than 2 models to be used
     
@@ -136,14 +136,14 @@ void() fx_particle_pool=
 }
 */
 
-//this function/method tells whether to group or not to group the provided fogbox with provided pool
-float(entity fogbox,entity pool) fx_compare_fogbox_pool=
+//this function/method tells whether to group or not to group the provided dustbox with provided pool
+float(entity dustbox,entity pool) fx_compare_DUSTBOX_pool=
 {
-    if(fogbox.style!=pool.style) return FALSE;           //Mathematical position algorithm
-    if(fogbox.v_angle!=pool.v_angle) return FALSE;       //Parameters of this algorithm
-    if(fogbox.speed!=pool.speed) return FALSE;       //Speed of the animation
-    if(fogbox.skin!=pool.skin) return FALSE;             //Model of the particle or skin of the model
-    if(fogbox.view_ofs!=pool.view_ofs) return FALSE;     //Size of the box surrouding the player
+    if(dustbox.style!=pool.style) return FALSE;           //Mathematical position algorithm
+    if(dustbox.v_angle!=pool.v_angle) return FALSE;       //Parameters of this algorithm
+    if(dustbox.speed!=pool.speed) return FALSE;       //Speed of the animation
+    if(dustbox.skin!=pool.skin) return FALSE;             //Model of the particle or skin of the model
+    if(dustbox.view_ofs!=pool.view_ofs) return FALSE;     //Size of the box surrouding the player
     return TRUE;
 }
 
@@ -161,7 +161,7 @@ entity() fx_get_particle_pool=
         while(TRUE)
         {
             //check if the requester will use existing pool
-            if(fx_compare_fogbox_pool(self,t))
+            if(fx_compare_DUSTBOX_pool(self,t))
             {
                 //correct requirements
                 if(self.count>t.count)
@@ -230,7 +230,7 @@ entity() fx_get_particle_pool=
 /*
 -----------------
 |               |
-|     FogBox    |
+|    dustbox    |
 |               |
 -----------------
 -style              Algorithm which controls the particles
@@ -238,15 +238,16 @@ entity() fx_get_particle_pool=
 -spped              Speed of the animation
 -count              Maximum number of particles to be displayed/calculated
 -skin               Color of the particle
--view_ofs           Minimum size of the fogbox
+-view_ofs           Minimum size of the dustbox
 *origin             center of the box
 *size               size of the box
 */
-float FX_FOGBOX_START_TIME=0.01;
-float FX_FOGBOX_UPDATE_TIME=0.01;
-vector FX_FOGBOX_DEFAULT_SIZE='512 512 512';
+float fx_dustbox_START_TIME=0.01;
+float fx_dustbox_UPDATE_TIME=0.01;
+vector fx_dustbox_DEFAULT_SIZE='512 512 512';
+vector FX_PARTICLE_DUMP_POSITION='0 0 0';
 
-void() fx_fogbox_think=
+void() fx_dustbox_think=
 {
     local entity t;
     local float i,f;
@@ -363,7 +364,7 @@ void() fx_fogbox_think=
             {
                 //make invisible
                 //t.origin=(0,0,0);
-                setorigin(t,(0,0,0));
+                setorigin(t,FX_PARTICLE_DUMP_POSITION);
             }
 
             //next
@@ -378,10 +379,10 @@ void() fx_fogbox_think=
     }
     
     //next update
-    self.nextthink=time+FX_FOGBOX_UPDATE_TIME;
+    self.nextthink=time+fx_dustbox_UPDATE_TIME;
 }
 
-void() fx_fogbox_use=
+void() fx_dustbox_use=
 {
     //disalbe/enable
     local float i;
@@ -389,17 +390,17 @@ void() fx_fogbox_use=
     if(self.spawnflags & 1)
     {
         //log
-        dprintln("Enabled FogBox ");
+        dprintln("Enabled dustbox ");
         dprint(self.targetname);
         //enable
         i=-1;
-        self.think=fx_fogbox_think;
-        self.nextthink=time+FX_FOGBOX_UPDATE_TIME;
+        self.think=fx_dustbox_think;
+        self.nextthink=time+fx_dustbox_UPDATE_TIME;
     }
     else 
     {
         //log
-        dprintln("Disabled FogBox ");
+        dprintln("Disabled dustbox ");
         dprint(self.targetname);
         //particles
         i=self.count;
@@ -418,24 +419,24 @@ void() fx_fogbox_use=
     self.spawnflags=self.spawnflags+i;
 }
 
-void() fx_fogbox_think_init=
+void() fx_dustbox_think_init=
 {
     //connect to the ring of particles
     self.chain=fx_get_particle_pool();
 
     //set use func
-    self.use=fx_fogbox_use;
+    self.use=fx_dustbox_use;
 
     //start loop
-    self.think=fx_fogbox_think;
-    self.nextthink=time+FX_FOGBOX_UPDATE_TIME;
+    self.think=fx_dustbox_think;
+    self.nextthink=time+fx_dustbox_UPDATE_TIME;
 }
 //particle (self.origin, '0 0 0', 75, 255);
 
-void() fx_fogbox=
+void() fx_dustbox=
 {
     //precache
-    fx_fogbox_precache();
+    fx_dustbox_precache();
 
     //calculate center and size of the box
     setmodel (self, self.model);	// set size and link into world
@@ -443,9 +444,9 @@ void() fx_fogbox=
 	self.model = "";
     self.origin=(self.absmax+self.absmin)/2;        //center
     self.size=vabs(self.absmax-self.absmin)/2;      //size
-    if(!self.view_ofs) self.view_ofs=FX_FOGBOX_DEFAULT_SIZE;
+    if(!self.view_ofs) self.view_ofs=fx_dustbox_DEFAULT_SIZE;
 
-    if(self.think) return;  //cause pool is already connected
+    if(self.think) return;  //cause pool is already connected (think can be SUB_Null)
 
     //optimize properties
     if(self.style==1)       //Move by vector
@@ -455,6 +456,6 @@ void() fx_fogbox=
     }
 
     //setup
-    self.think=fx_fogbox_think_init;
-    self.nextthink=time+FX_FOGBOX_START_TIME;
+    self.think=fx_dustbox_think_init;
+    self.nextthink=time+fx_dustbox_START_TIME;
 }

@@ -7,6 +7,7 @@
 "wad" "C:/quake/tools/wads/shadow.wad;C:/quake/tools/wads/speedy_cr8.wad;C:/quake/tools/wads/common.wad;C:/quake/tools/wads/liquid.wad"
 "_tb_mod" "dr57-quake-basic"
 "_tb_def" "external:C:/quake/dr57-quake-basic/maps/def.fgd"
+"_tb_layer_hidden" "1"
 // brush 0
 {
 ( 768 496 0 ) ( 768 497 0 ) ( 768 496 1 ) cr8_brick2trim [ 0 -1 0 0 ] [ 0 0 -1 0 ] 0 1 1
@@ -2010,7 +2011,7 @@
 }
 // entity 38
 {
-"classname" "fx_fogbox"
+"classname" "fx_dustbox"
 "count" "200"
 "style" "1"
 "skin" "14"
@@ -2030,7 +2031,7 @@
 }
 // entity 39
 {
-"classname" "fx_fogbox"
+"classname" "fx_dustbox"
 "count" "200"
 "style" "1"
 "skin" "14"
@@ -2050,7 +2051,7 @@
 }
 // entity 40
 {
-"classname" "fx_fogbox"
+"classname" "fx_dustbox"
 "count" "200"
 "style" "2"
 "skin" "13"
@@ -2071,7 +2072,7 @@
 }
 // entity 41
 {
-"classname" "fx_fogbox"
+"classname" "fx_dustbox"
 "count" "200"
 "style" "1"
 "skin" "14"

@@ -599,7 +599,7 @@
 @baseclass base(Targetname) = dr57-quale-basic-fx
 []
 
-@SolidClass base(dr57-quale-basic-fx) = fx_fogbox : "Fx: Fogbox"
+@SolidClass base(dr57-quale-basic-fx) = fx_dustbox : "Fx: Dustbox"
 [
     style(choices) : "Style of the particle position assignment" : 0=
 	[
