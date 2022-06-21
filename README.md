@@ -7,6 +7,8 @@ Assuming that you know how the simple process of making maps in quake goes, and 
 In order to make a map with use of this mod, you have to:
  - include this mod in your level editor. Example from trenchbroom:
  - load the entity definition file from `/dr57-quake-basic/maps/def.fgd` in your level editor.
+## Discord
+For more information please visit discord server that can be found here: [https://dataram57.com/](https://dataram57.com/discord/)
 ## Objects
 | classname | short description |
 |--|--|
