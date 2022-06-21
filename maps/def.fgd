@@ -599,7 +599,7 @@
 @baseclass base(Targetname) = dr57-quale-basic-fx
 []
 
-@SolidClass base(dr57-quale-basic-fx) = fx_dustbox : "Fx: Dustbox"
+@SolidClass base(dr57-quale-basic-fx) = fx_dustbox : "Fx: Dustbox - Creates an effect of particles surrounding the player in a specific box area, specified by the brush size. Objects are being grouped by their properties and each object from the same group is using the same pool of particles, in order to make the game work faster."
 [
     style(choices) : "Style of the particle position assignment" : 0=
 	[
