@@ -8,6 +8,11 @@ void(float f) dprintlnf=
     dprint("\n");
     dprint(ftos(f));
 }
+void(vector v) dprintlnv=
+{
+    dprint("\n");
+    dprint(vtos(v));
+}
 void(entity who,string name,string val) dprintby=
 {
     return;

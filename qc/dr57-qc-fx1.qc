@@ -480,3 +480,47 @@ void() fx_dustbox=
     self.think=fx_dustbox_think_init;
     self.nextthink=time+fx_dustbox_START_TIME;
 }
+
+/*
+-----------------
+|               |
+|    fx_halo    |
+|               |
+-----------------
+-model              model of the halo
+-t_length           minimum length
+*origin             current position of the halo object
+*v_angle            base origin
+*/
+
+float fx_halo_UPDATE_TIME=0.01;
+
+void() fx_halo_think=   
+{
+    local entity player = find(world,classname,"player");
+    local vector vt = player.origin + player.view_ofs;       //origin of the CAMERA
+
+    //check is player visible
+    if(vvisible(self.v_angle, vt))
+    {
+        local vector new_v = self.v_angle - vt;            //diffrence
+        local float distance = vlen(new_v);
+        new_v = new_v * (fmin(distance, self.t_length) / distance);           //ratio and new v in 1 line
+        setorigin(self,new_v + vt);
+    }
+    else
+        setorigin(self,self.v_angle);
+    //next frame
+    self.nextthink = time + fx_halo_UPDATE_TIME;
+
+    dprintlnv(player.view_ofs);
+}
+
+void() fx_halo=
+{
+    precache_model(self.model);
+    setmodel (self, self.model);
+    self.v_angle = self.origin;
+    self.think = fx_halo_think;
+    self.nextthink=time + fx_halo_UPDATE_TIME;
+}

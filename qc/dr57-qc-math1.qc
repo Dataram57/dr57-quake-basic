@@ -130,3 +130,15 @@ float(float angle) farcos=
 {
     return farsin(90+angle);
 }
+
+float (vector a, vector b) vvisible =
+{
+	traceline (a, b, TRUE, self);	// see through other monsters
+	
+	if (trace_inopen && trace_inwater)
+		return FALSE;			// sight line crossed contents
+
+	if (trace_fraction == 1)
+		return TRUE;
+	return FALSE;
+};

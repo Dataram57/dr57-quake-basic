@@ -637,3 +637,10 @@
 		1: "Disabled" : 0
 	]
 ]
+
+@PointClass base(dr57-quale-basic-fx) = fx_halo : "Fx: Halo - ?"
+[
+	model(string) : "Path to the sprite"
+	t_length(integer) : "Minimum length from the player"
+
+]
