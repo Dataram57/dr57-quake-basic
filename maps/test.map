@@ -2017,66 +2017,36 @@
 // entity 38
 {
 "classname" "misc_model"
-"origin" "888 872 8"
+"origin" "840 856 8"
 "model" "progs/s_dotmed_dblue.spr"
 }
 // entity 39
 {
-"classname" "misc_model"
-"origin" "888 856 8"
-"model" "progs/s_dotmed_dblue.spr"
-"alpha" "0.9"
-}
-// entity 40
-{
-"classname" "misc_model"
-"origin" "888 840 8"
-"model" "progs/s_dotmed_dblue.spr"
-"alpha" "0.8"
-}
-// entity 41
-{
-"classname" "misc_model"
-"origin" "888 824 8"
-"model" "progs/s_dotmed_dblue.spr"
-"alpha" "0.7"
-}
-// entity 42
-{
-"classname" "misc_model"
-"origin" "888 808 8"
-"model" "progs/s_dotmed_dblue.spr"
-"alpha" "0.6"
-}
-// entity 43
-{
-"classname" "misc_model"
-"origin" "888 792 8"
-"model" "progs/s_dotmed_dblue.spr"
-"alpha" "0.5"
-}
-// entity 44
-{
-"classname" "misc_model"
-"origin" "872 792 8"
-"model" "progs/s_dotmed_dblue.spr"
-"alpha" "0.1"
-}
-// entity 45
-{
 "classname" "fx_halo"
 "origin" "780 768 176"
 "t_length" "128"
-"model" "progs/s_light.spr"
+"model" "progs/test.spr"
 }
-// entity 46
+// entity 40
 {
 "classname" "misc_model"
 "origin" "984 1240 8"
 "model" "progs/s_dotmed_dblue.spr"
 "alpha" "0.9"
 }
-// entity 47
+// entity 41
+{
+"classname" "misc_model"
+"origin" "840 744 8"
+"model" "progs/s_bookrune1.spr"
+}
+// entity 42
+{
+"classname" "misc_model"
+"origin" "840 776 8"
+"model" "progs/test.spr"
+}
+// entity 43
 {
 "classname" "func_group"
 "_tb_type" "_tb_layer"
@@ -2085,7 +2055,7 @@
 "_tb_layer_sort_index" "0"
 "_tb_layer_hidden" "1"
 }
-// entity 48
+// entity 44
 {
 "classname" "fx_dustbox"
 "count" "200"
@@ -2105,7 +2075,7 @@
 ( 576 400 80 ) ( 576 400 81 ) ( 576 401 80 ) trigger [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1
 }
 }
-// entity 49
+// entity 45
 {
 "classname" "fx_dustbox"
 "count" "200"
@@ -2125,7 +2095,7 @@
 ( 576 512 256 ) ( 576 256 -64 ) ( 576 256 256 ) trigger [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1
 }
 }
-// entity 50
+// entity 46
 {
 "classname" "fx_dustbox"
 "count" "200"
@@ -2146,7 +2116,7 @@
 ( 384 848 80 ) ( 384 848 81 ) ( 384 849 80 ) trigger [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1
 }
 }
-// entity 51
+// entity 47
 {
 "classname" "fx_dustbox"
 "count" "200"
@@ -2166,7 +2136,7 @@
 ( 1280 1264 256 ) ( 1280 752 0 ) ( 1280 752 256 ) trigger [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1
 }
 }
-// entity 52
+// entity 48
 {
 "classname" "func_group"
 "_tb_type" "_tb_group"
@@ -2174,7 +2144,7 @@
 "_tb_id" "12"
 "_tb_layer" "3"
 }
-// entity 53
+// entity 49
 {
 "classname" "fx_dustbox"
 "count" "200"
@@ -2195,7 +2165,7 @@
 ( 1280 1264 256 ) ( 1280 752 0 ) ( 1280 752 256 ) trigger [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1
 }
 }
-// entity 54
+// entity 50
 {
 "classname" "fx_dustbox"
 "count" "200"
@@ -2216,7 +2186,7 @@
 ( 576 400 80 ) ( 576 400 81 ) ( 576 401 80 ) trigger [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1
 }
 }
-// entity 55
+// entity 51
 {
 "classname" "fx_dustbox"
 "count" "200"
